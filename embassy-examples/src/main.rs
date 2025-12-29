@@ -1,14 +1,16 @@
-# vl53l1x-hal
-A platform-agnostic Hardware Abstraction Layer for the Time of Flight distance sensor vl53l1x in pure Rust
+#![no_std]
+#![no_main]
 
-It works on both `std` and `no_std` environment.
+use defmt::*;
 
-### Hybrid Async
-The library itself is not designed to use the `I²C` async embedded hal, so the actual API is blocking.
+use embassy_rp::gpio::{Input, Pull};
+use embassy_rp::i2c::{Config, I2c};
 
-That said, the sensor provides an interrupt pin that could be wired as **async interrupt trigger** when an object is within the distance threshold, avoiding the continuous polling workflow as shown in this example:
-```rust
-// imports...
+use embassy_executor::Spawner;
+use embassy_time::Delay;
+use vl53l1x_hal::{Precision, TimingBudget, Vl53l1x, WindowDetectionMode};
+
+use {defmt_rtt as _, panic_probe as _};
 
 #[embassy_executor::main]
 async fn main(_spawner: Spawner) {
@@ -35,7 +37,3 @@ async fn main(_spawner: Spawner) {
         info!("interrupt triggered, distance [mm]: {}", sensor.get_distance_mm().unwrap());
     }
 }
-```
-
-### Linux Embedded
-As mentioned at the beginning, you can also find an example of usage of the same library running this time on [Linux](./examples/linux-i2c.rs) using a **Raspberry Pi Zero 2 W** within a `tokyo async runtime`

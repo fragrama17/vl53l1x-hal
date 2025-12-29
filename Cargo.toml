@@ -1,0 +1,12 @@
+[package]
+name = "vl53l1x-hal"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+embedded-hal = "1.0.0"
+
+[dev-dependencies]
+linux-embedded-hal = { version = "0.4.0" }
+gpiocdev = "0.8.0"
+tokio = { version = "1.44.2", features = ["macros", "rt-multi-thread", "full"] }
